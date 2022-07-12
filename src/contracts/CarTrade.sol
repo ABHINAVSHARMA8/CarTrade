@@ -44,7 +44,7 @@ contract CarTrade is ERC721URIStorage{
 
     
     string private contractName ;
-    uint onewei = 1 wei;
+    
     uint depr_mileage;
     uint depr_engine;
     uint depr_fuel;
@@ -123,7 +123,7 @@ contract CarTrade is ERC721URIStorage{
 
         uint price =  mileage + engine + fuel;
 
-        return price*onewei;
+        return price;
 
 
     }
@@ -249,7 +249,7 @@ contract CarTrade is ERC721URIStorage{
         require(c.onSale==false,'Car Already on Sale');
       
         c.onSale = true;
-        c.price  = price*onewei;
+        c.price  = price;
     
 
         emit postCarEvent(msg.sender,c.id);
