@@ -1,0 +1,29 @@
+.full{
+    display:flex;
+    flex-direction:row;
+    margin-top: 2em;
+    justify-content: space-between;
+    overflow-y: auto;
+}
+.box{
+    display: flex;
+    flex-direction: column;
+    background-color: #0261AF;
+    justify-content: center;
+    position: relative;
+    margin-left: 5%;
+    width:40%;
+    min-height: 30em;
+    border-radius: 20px;
+}
+.about{
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    text-align: center;
+    margin:20px;
+    font-size: large;
+    background-color: whitesmoke;
+    border-radius: 20px;
+
+}
