@@ -19,7 +19,7 @@ function Header(){
         
         <nav className={nav ? 'nav active' : 'nav'}>
             <a href="/" className='logo'>
-                HomePage
+                Home Page
             </a>
             <label className='menu-icon' for='menu-btn'>
                 <span className='nav-icon'></span>

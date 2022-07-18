@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import './App.css';
+import "./App.css";
 import Web3 from 'web3'
 import CarTrade from '../abis/CarTrade.json'
 
@@ -7,7 +7,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Landing from './landing';
 import MyCars from './myCars';
 import Trade from './trade'
-import Navbar from './Components/Navbar';
+
 
 
 class App extends Component {
@@ -15,20 +15,27 @@ class App extends Component {
  async  componentDidMount(){
     document.title = "Car Trade"
     console.log("hELlo")
-    await this.loadWeb3()
-    await this.loadBlockchainData()
+    await this.loadWeb3(async ()=>{
+
+      await this.loadBlockchainData()
+
+    })
+    
 
   }
 
   async loadBlockchainData(){
 
-    const web3 = window.web3
+     const web3 = window.web3
 
-    const accounts = await web3.eth.getAccounts()
-    this.setState({ account: accounts[0] })
-
+    // const accounts = await web3.eth.getAccounts()
+    // console.log(accounts[0])
+    // this.setState({ account: accounts[0] })
+    // console.log("account set")
+   // console.log(this.state.account)
+    console.log("load "+this.state.account)
     const ethBalance = await web3.eth.getBalance(this.state.account)
-    this.setState({ ethBalance })
+    this.setState({ ethBalance:ethBalance })
 
     // Load CarTrade
     const networkId =  await web3.eth.net.getId()
@@ -49,10 +56,22 @@ class App extends Component {
     if (window.ethereum) {
       window.web3 = new Web3(window.ethereum)
       await window.ethereum.enable()
+
+      
+
+      let accs = await window.ethereum.request({
+        method: "eth_requestAccounts",
+      });
+      
+
+      this.setState({ account: accs[0]},()=>{
+        console.log(this.state.account+" account")
+      });
+      
+
+      
     }
-    else if (window.web3) {
-      window.web3 = new Web3(window.web3.currentProvider)
-    }
+    
     else {
       window.alert('Non-Ethereum browser detected. You should consider trying MetaMask!')
     }
@@ -89,14 +108,30 @@ class App extends Component {
     })
   }
 
+  listCars = () => {
+    this.setState({ loading: true })
+    this.state.carTrade.methods.getListedCars().send({ from: this.state.account }).on('transactionHash', (hash) => {
+      this.setState({ loading: false })
+    })
+  }
+
+  myCars = () => {
+    this.setState({ loading: true })
+    this.state.carTrade.methods.getMyCars().send({ from: this.state.account }).on('transactionHash', (hash) => {
+      this.setState({ loading: false })
+    })
+  }
+
+
+
 
   constructor(props) {
     super(props)
     this.state = {
-      account: '',
+      account: "account",
       carTrade: {},
       
-      
+      ethBalance:null,
       carTradeBalance: '0',
       loading: true
     }
@@ -117,9 +152,7 @@ class App extends Component {
         </Routes>
       </Router>
 
-      <div>
-        <Navbar/>
-      </div>
+      
 
       </>
 

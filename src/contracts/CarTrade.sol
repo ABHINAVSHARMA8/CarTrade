@@ -14,12 +14,12 @@ pragma solidity ^0.8.15;
 
 */
 
-import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
-import "@openzeppelin/contracts/utils/Counters.sol";
+import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 
 
 
-contract CarTrade is ERC721URIStorage{
+
+contract CarTrade is ERC721{
 
 
 
@@ -49,8 +49,8 @@ contract CarTrade is ERC721URIStorage{
     uint depr_engine;
     uint depr_fuel;
     uint totalCars=0;
-    mapping(uint=> bool) nft;
-    mapping(uint => Car) cars;
+    mapping(uint=> bool) public nft;
+    mapping(uint => Car) public cars;
     mapping(address => bool) manufacturers;
     
 
@@ -113,7 +113,60 @@ contract CarTrade is ERC721URIStorage{
    }
 
  
+    function getListedCars() public view returns (Car[] memory) {
+    
 
+    
+
+    uint n=0;
+
+     for (uint i = 0; i < totalCars; i++) {
+      if (nft[i] && cars[i + 1].onSale) {
+        n+=1;
+
+      }
+    }
+
+    Car[] memory onSaleCars=new Car[](n);
+    uint idx=0;
+    
+    for (uint i = 0; i < totalCars; i++) {
+      if (nft[i] && cars[i + 1].onSale) {
+        onSaleCars[idx]=(cars[i + 1]);
+        idx++;
+       
+      }
+    }
+    return onSaleCars;
+  }
+
+  function getMyCars() public view returns (Car[] memory) {
+
+   
+
+    uint n=0;
+
+    for (uint i = 0; i < totalCars; i++) {
+      if (nft[i+1] &&  ownerOf(i+1) == msg.sender) {
+        n+=1;
+      }
+    }
+
+     Car[] memory myCars=new Car[](n);
+
+     uint idx=0;
+
+   
+    for (uint i = 0; i < totalCars; i++) {
+      if (nft[i+1] &&  ownerOf(i+1) == msg.sender) {
+        myCars[idx]=(cars[i + 1]);
+        idx+=1;
+      }
+    }
+
+    
+    return myCars;
+  }
 
 
     function get_price(uint mileage,

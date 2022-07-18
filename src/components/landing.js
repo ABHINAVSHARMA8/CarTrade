@@ -6,13 +6,8 @@ function Landing(){
     return(
         <div className="App">
                 <Header/>
-                <div className="full">
-                    <div className="box">
-                        <h1>About</h1>
-                        <div className="about">
-                        
-                        </div>
-                    </div>
+                <div className="about">
+                    <p>Description of the project</p>
                         
                 </div>
         </div>

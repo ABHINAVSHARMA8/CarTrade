@@ -14,7 +14,7 @@ nav{
 
 nav.active{
 	box-shadow: 5px 10px 30px rgba(0, 247, 255, 0.157);
-	background-color: #0261AF;
+	background-color: white;
 }
 nav dl{
 	display: flex;
