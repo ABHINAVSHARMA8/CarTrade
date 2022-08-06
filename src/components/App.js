@@ -7,6 +7,8 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Landing from './landing';
 import MyCars from './myCars';
 import Trade from './trade'
+import Register from './register'
+import MakeCar from './makeCar';
 
 
 
@@ -33,18 +35,17 @@ class App extends Component {
     // this.setState({ account: accounts[0] })
     // console.log("account set")
    // console.log(this.state.account)
+   const accounts = await web3.eth.getAccounts()
+    this.setState({ account: accounts[0] })
     console.log("load "+this.state.account)
-    const ethBalance = await web3.eth.getBalance(this.state.account)
-    this.setState({ ethBalance:ethBalance })
 
     // Load CarTrade
     const networkId =  await web3.eth.net.getId()
     const carTradeData = CarTrade.networks[networkId]
     if(carTradeData) {
       const carTrade = new web3.eth.Contract(CarTrade.abi, carTradeData.address)
-      this.setState({ carTrade })
-      let carTradeBalance = await web3.eth.getBalance(this.state.account)
-      this.setState({ Balance: carTradeBalance })
+      this.setState({ carTrade:carTrade })
+     
     } else {
       window.alert('CarTrade contract not deployed to detected network.')
     }
@@ -56,22 +57,10 @@ class App extends Component {
     if (window.ethereum) {
       window.web3 = new Web3(window.ethereum)
       await window.ethereum.enable()
-
-      
-
-      let accs = await window.ethereum.request({
-        method: "eth_requestAccounts",
-      });
-      
-
-      this.setState({ account: accs[0]},()=>{
-        console.log(this.state.account+" account")
-      });
-      
-
-      
     }
-    
+    else if (window.web3) {
+      window.web3 = new Web3(window.web3.currentProvider)
+    }
     else {
       window.alert('Non-Ethereum browser detected. You should consider trying MetaMask!')
     }
@@ -79,11 +68,11 @@ class App extends Component {
 
   //functions
 
-  register_as_manufacturer = (etherAmount) => {
+  register_as_manufacturer = () => {
     this.setState({ loading: true })
-    this.state.carTrade.methods.register_as_manufacturer().send({ value: etherAmount, from: this.state.account }).on('transactionHash', (hash) => {
+    this.state.carTrade.methods.register_as_manufacturer().send({  from: this.state.account })/*.on('transactionHash', (hash) => {
       this.setState({ loading: false })
-    })
+    })*/
   }
 
   makeCar = (mileage,engine,fuel,etherAmount) => {
@@ -122,6 +111,7 @@ class App extends Component {
     })
   }
 
+  
 
 
 
@@ -131,8 +121,7 @@ class App extends Component {
       account: "account",
       carTrade: {},
       
-      ethBalance:null,
-      carTradeBalance: '0',
+     
       loading: true
     }
   }
@@ -146,9 +135,12 @@ class App extends Component {
       <>
       <Router>
         <Routes>
-          <Route path="/" element = {<Landing/>} / >
-          <Route path="/myCars" element = {<MyCars/>} / >
-          <Route path="/trade" element = {<Trade/>} / >
+          <Route path="/" element = {<Landing />} / >
+          <Route path="/myCars" element = {<MyCars carTrade={this.state.carTrade} postCar={this.postCar} /*contract={}*/ />} / >
+          <Route path="/Trade" element = {<Trade carTrade={this.state.carTrade} buy={this.buy}/>} / >
+          <Route path="/Register" element = {<Register register_as_manufacturer={this.register_as_manufacturer}/>} / >
+          <Route path="/makeCar" element = {<MakeCar makeCar={this.makeCar}/>} / >
+        
         </Routes>
       </Router>
 

@@ -27,6 +27,8 @@ function Header(){
             <dl className=' menu'>
                 <dd><Link to='/myCars'>My Cars</Link></dd>
                 <dd><Link to='/Trade'>Trade</Link></dd>
+                <dd><Link to='/Register'>Register As a Manufacturer</Link></dd>
+                <dd><Link to='/makeCar'>Make Car</Link></dd>
             </dl>
         </nav>
     )
